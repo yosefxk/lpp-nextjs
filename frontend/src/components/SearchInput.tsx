@@ -25,6 +25,11 @@ export default function SearchInput({ onSearch, isLoading, initialValue = "" }: 
     e.preventDefault();
     if (plate.trim()) {
       onSearch(plate.trim());
+      // Minimize keyboard on mobile
+      if (e.target instanceof HTMLFormElement) {
+        const input = e.target.querySelector('input');
+        if (input) input.blur();
+      }
     }
   };
 
@@ -45,7 +50,7 @@ export default function SearchInput({ onSearch, isLoading, initialValue = "" }: 
           onChange={(e) => setPlate(e.target.value)}
           placeholder="הזן מספר רישוי"
           className={cn(
-            "relative w-full glass-panel text-white rounded-2xl py-5 pr-14 pl-6",
+            "relative w-full glass-panel text-white rounded-2xl py-5 pl-14 pr-6",
             "text-xl font-medium focus:outline-none focus:border-[#4ECDC4]/50 transition-all",
             "placeholder:text-gray-500"
           )}
@@ -54,7 +59,7 @@ export default function SearchInput({ onSearch, isLoading, initialValue = "" }: 
         <button 
           type="submit" 
           disabled={isLoading || !plate} 
-          className="absolute right-4 text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors disabled:opacity-50"
+          className="absolute left-4 text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors disabled:opacity-50"
         >
           {isLoading ? (
             <Loader2 className="w-7 h-7 animate-spin text-[#4ECDC4]" />

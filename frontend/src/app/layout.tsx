@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "חיפוש מספרי רישוי | LPP AI",
-  description: "מנוע חכם לאיתור נתוני רכבים ישראליים, בעלויות, ריקולים וסטטוס מבני.",
+  title: "BaileyTV LP Project",
+  description: "Advanced Israeli License Plate Finder",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

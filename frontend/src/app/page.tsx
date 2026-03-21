@@ -54,13 +54,18 @@ function SearchApp() {
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
       const res = await fetch(`${backendUrl}/api/search/${encodeURIComponent(plate)}`);
+      
       if (!res.ok) {
         if (res.status === 404) {
-          throw new Error("לא נמצאו נתונים עבור לוחית הרישוי המבוקשת.");
+          throw new Error("לא נמצאו נתונים עבור לוחית הרישוי המבוקשת");
         }
         throw new Error("שגיאה בתקשורת מול השרת. אנא נסה שוב.");
       }
+      
       const data = await res.json();
+      if (!data || (data.datasets && Object.keys(data.datasets).length === 0)) {
+        throw new Error("לא נמצאו נתונים עבור לוחית הרישוי המבוקשת");
+      }
       setProfile(data);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -84,7 +89,7 @@ function SearchApp() {
         className="text-center mb-16 mt-8"
       >
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-gradient mb-2">
-          חיפוש רכב
+          {process.env.NEXT_PUBLIC_APP_TITLE || "חיפוש רכב"}
         </h1>
       </motion.div>
 
