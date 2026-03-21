@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: israeli_license_plate_finder_backend
+    ports:
+      - "8081:8000"
+    restart: unless-stopped
+    networks:
+      - media_network
+
+  frontend:
+    build: ./frontend
+    container_name: israeli_license_plate_finder_frontend
+    ports:
+      - "6942:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL:-http://localhost:8000}
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - media_network
+
+networks:
+  media_network:
+    external: true
