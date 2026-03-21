@@ -7,22 +7,11 @@ const siteDescription = "Advanced Israeli License Plate Finder";
 export const metadata: Metadata = {
   title: siteTitle,
   description: siteDescription,
-  icons: {
-    icon: "/favicon.png?v=2",
-  },
   openGraph: {
     title: siteTitle,
     description: siteDescription,
     url: "https://lp.baileytv.live",
     siteName: siteTitle,
-    images: [
-      {
-        url: "/og-image.png?v=2",
-        width: 1200,
-        height: 630,
-        alt: siteTitle,
-      },
-    ],
     locale: "he_IL",
     type: "website",
   },
@@ -30,7 +19,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
-    images: ["/og-image.png?v=2"],
   },
 };
 
