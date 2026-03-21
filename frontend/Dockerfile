@@ -10,6 +10,8 @@ RUN npm install
 COPY . .
 
 # Build the project
+ARG NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 RUN npm run build
 
 # Next.js production environment variables
