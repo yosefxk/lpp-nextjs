@@ -52,7 +52,7 @@ function SearchApp() {
     }
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+      const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000').replace(/\/+$/, '');
       const res = await fetch(`${backendUrl}/api/search/${encodeURIComponent(plate)}`);
       
       if (!res.ok) {

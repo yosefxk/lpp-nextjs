@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const siteTitle = process.env.NEXT_PUBLIC_APP_TITLE || "BaileyTV LP Project";
+const siteTitle = process.env.NEXT_PUBLIC_APP_TITLE || "Israeli License Plate Finder";
 const siteDescription = "Advanced Israeli License Plate Finder";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteTitle,
     description: siteDescription,
-    url: "https://lp.baileytv.live",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "",
     siteName: siteTitle,
     locale: "he_IL",
     type: "website",

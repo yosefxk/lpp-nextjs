@@ -15,7 +15,7 @@ services:
       context: ./frontend
       args:
         - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL:-http://localhost:8000}
-        - NEXT_PUBLIC_APP_TITLE=${NEXT_PUBLIC_APP_TITLE:-BaileyTV LP Project}
+        - NEXT_PUBLIC_APP_TITLE=${NEXT_PUBLIC_APP_TITLE:-Israeli License Plate Finder}
     container_name: israeli_license_plate_finder_frontend
     ports:
       - "6942:3000"
