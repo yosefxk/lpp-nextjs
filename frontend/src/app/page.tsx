@@ -91,6 +91,9 @@ function SearchApp() {
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-gradient mb-2">
           {process.env.NEXT_PUBLIC_APP_TITLE || "חיפוש רכב"}
         </h1>
+        <p className="text-xs md:text-sm font-semibold tracking-wider text-neutral-400 uppercase opacity-85 mt-2">
+          באירוח BaileyTV • Hosted on BaileyTV
+        </p>
       </motion.div>
 
       {/* Search Input */}
