@@ -33,45 +33,122 @@ const UI_TRANSLATIONS = {
   loadingText: { en: "Loading interface...", he: "טוען ממשק..." }
 };
 
-// Flag Translations
+// Flag Translations (match raw backend flag text exactly to translate to clean text)
 const FLAG_TRANSLATIONS: Record<string, string> = {
-  "⚠️ קריאת שירות (ריקול) פתוחה רשומה על רכב זה": "⚠️ Open Safety Recall registered for this vehicle",
-  "🚨 רישיון הרכב מוגבל עקב אי-ביצוע ריקול בזמן": "🚨 Vehicle license restricted due to outstanding safety recall",
-  "❌ רכב זה הורד מהכביש או בוטל סופית": "❌ This vehicle has been permanently taken off the road or cancelled",
-  "❗ רכב זה רשום במשרד הרישוי כלא פעיל": "❗ This vehicle is registered as inactive in the licensing registry",
-  "⚠️ תוקף רישיון הרכב (טסט) פג": "⚠️ The M.O.T. test / vehicle license has expired"
+  "⚠️ קריאת שירות (ריקול) פתוחה רשומה על רכב זה": "Open Safety Recall registered for this vehicle",
+  "🚨 רישיון הרכב מוגבל עקב אי-ביצוע ריקול בזמן": "Vehicle license restricted due to outstanding safety recall",
+  "❌ רכב זה הורד מהכביש או בוטל סופית": "This vehicle has been permanently taken off the road or cancelled",
+  "❗ רכב זה רשום במשרד הרישוי כלא פעיל": "This vehicle is registered as inactive in the licensing registry",
+  "⚠️ תוקף רישיון הרכב (טסט) פג": "The M.O.T. test / vehicle license has expired"
 };
 
-// Realistic HTML/CSS Israeli License Plate component
+// Helper to strip leading emojis/icons from alert strings for clean text alignment
+const cleanFlagText = (text: string) => {
+  return text.replace(/^[⚠️🚨❌❗\s]+/, '').trim();
+};
+
+// Realistic HTML/CSS Israeli License Plate component (rendered as an image so it is copyable & saveable)
 function LicensePlate({ number }: { number: string }) {
-  const formatPlate = (num: string) => {
-    const clean = num.replace(/\D/g, '');
-    if (clean.length === 7) {
-      return `${clean.slice(0, 2)}-${clean.slice(2, 5)}-${clean.slice(5)}`;
-    }
-    if (clean.length === 8) {
-      return `${clean.slice(0, 3)}-${clean.slice(3, 5)}-${clean.slice(5)}`;
-    }
-    return num;
-  };
+  const [imgUrl, setImgUrl] = useState("");
+
+  useEffect(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 300;
+    canvas.height = 70;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Draw yellow plate background
+    ctx.fillStyle = "#FCD116";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw outer thick black border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#0d0d0d";
+    ctx.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+
+    // Draw inner thin black border (double border)
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(6, 6, canvas.width - 12, canvas.height - 12);
+
+    // Draw left blue strip
+    ctx.fillStyle = "#0038A8";
+    ctx.fillRect(6, 6, 36, canvas.height - 12);
+
+    // Draw black divider line
+    ctx.strokeStyle = "#0d0d0d";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(42, 6);
+    ctx.lineTo(42, canvas.height - 6);
+    ctx.stroke();
+
+    // Draw Israel Flag on blue strip
+    const flagX = 14;
+    const flagY = 16;
+    const flagW = 20;
+    const flagH = 12;
+
+    // Flag background
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(flagX, flagY, flagW, flagH);
+
+    // Flag stripes
+    ctx.fillStyle = "#0038A8";
+    ctx.fillRect(flagX, flagY + 2, flagW, 1.5);
+    ctx.fillRect(flagX, flagY + flagH - 3.5, flagW, 1.5);
+
+    // Flag star
+    ctx.fillStyle = "#0038A8";
+    ctx.font = "bold 8px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("✡", flagX + flagW/2, flagY + flagH/2 + 0.5);
+
+    // Draw 'IL' text
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 11px system-ui, -apple-system, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("IL", 24, 46);
+
+    // Format plate numbers
+    const formatPlate = (num: string) => {
+      const clean = num.replace(/\D/g, '');
+      if (clean.length === 7) {
+        return `${clean.slice(0, 2)}-${clean.slice(2, 5)}-${clean.slice(5)}`;
+      }
+      if (clean.length === 8) {
+        return `${clean.slice(0, 3)}-${clean.slice(3, 5)}-${clean.slice(5)}`;
+      }
+      return num;
+    };
+
+    const formatted = formatPlate(number);
+
+    // Draw numbers
+    ctx.fillStyle = "#0d0d0d";
+    ctx.font = "900 32px monospace, Courier New, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    
+    const textCenterX = 42 + (canvas.width - 42) / 2;
+    ctx.fillText(formatted, textCenterX, canvas.height / 2 + 1);
+
+    setImgUrl(canvas.toDataURL("image/png"));
+  }, [number]);
+
+  if (!imgUrl) {
+    return <div className="h-[70px] w-[300px] bg-neutral-800 animate-pulse rounded-lg" />;
+  }
 
   return (
-    <div className="relative inline-flex items-center justify-center bg-[#FCD116] border-[3px] border-neutral-950 rounded-lg shadow-xl px-4 py-2.5 font-bold text-neutral-900 select-none overflow-hidden h-[60px] min-w-[210px] pl-10 border-double border-8">
-      {/* Left Side Blue Strip (Israel / IL badge) */}
-      <div className="absolute left-0 top-0 bottom-0 w-8 bg-[#0038A8] flex flex-col items-center justify-center text-white py-0.5 border-r border-neutral-950 select-none">
-        {/* Flag Graphic */}
-        <div className="w-[15px] h-[10px] bg-white relative flex flex-col justify-between border-[0.5px] border-blue-900 py-[0.5px] px-[1px]">
-          <div className="w-full h-[1px] bg-[#0038A8]" />
-          <div className="text-[5px] leading-none text-center text-[#0038A8] -mt-[2px] font-bold">✡</div>
-          <div className="w-full h-[1px] bg-[#0038A8]" />
-        </div>
-        <span className="text-[8px] font-sans font-extrabold tracking-normal mt-0.5 leading-none">IL</span>
-      </div>
-      {/* License plate text */}
-      <span className="font-mono text-2xl md:text-3xl tracking-widest text-center w-full font-black leading-none pl-1 text-black">
-        {formatPlate(number)}
-      </span>
-    </div>
+    <img 
+      src={imgUrl} 
+      alt={`License Plate ${number}`} 
+      className="shadow-xl rounded-lg border-2 border-neutral-900/50 cursor-pointer max-w-full hover:scale-102 transition-transform select-all" 
+      style={{ width: "300px", height: "70px" }}
+    />
   );
 }
 
@@ -154,7 +231,7 @@ function SearchApp() {
   const isRtl = lang === "he";
 
   return (
-    <div className="w-full flex flex-col min-h-screen" style={{ direction: isRtl ? "rtl" : "ltr" }}>
+    <div className="w-full flex flex-col min-h-screen animate-fadeIn" style={{ direction: isRtl ? "rtl" : "ltr" }}>
       {/* Sticky Floating Navigation Header */}
       <header className="w-full max-w-7xl mx-auto px-4 py-4 flex justify-between items-center z-50">
         <div className="flex items-center gap-2">
@@ -243,18 +320,23 @@ function SearchApp() {
                 )}
 
                 {profile.red_flags.map((flag, idx) => {
-                  const translatedFlag = lang === "en" ? (FLAG_TRANSLATIONS[flag] || flag) : flag;
+                  const rawTranslated = FLAG_TRANSLATIONS[flag] || flag;
+                  const finalMessageText = lang === "en" ? rawTranslated : cleanFlagText(flag);
+                  
                   return (
                     <motion.div 
                       key={idx}
                       initial={{ scale: 0.95, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
                       transition={{ delay: 0.2 + (idx * 0.1) }}
-                      className="bg-[#ef4444]/15 border border-[#ef4444]/30 text-[#ef4444] px-6 py-4 rounded-xl flex items-center gap-3 font-bold shadow-lg shadow-[#ef4444]/10 text-right"
-                      style={{ direction: isRtl ? "rtl" : "ltr" }}
+                      className="bg-[#ef4444]/15 border border-[#ef4444]/30 text-[#ef4444] px-6 py-4 rounded-xl flex items-center gap-3 font-bold shadow-lg shadow-[#ef4444]/10"
+                      style={{ 
+                        direction: isRtl ? "rtl" : "ltr",
+                        textAlign: isRtl ? "right" : "left"
+                      }}
                     >
-                      <AlertTriangle className="w-6 h-6 shrink-0" />
-                      <span>{translatedFlag}</span>
+                      <AlertTriangle className="w-6 h-6 shrink-0 text-[#ef4444]" />
+                      <span className="flex-1">{finalMessageText}</span>
                     </motion.div>
                   );
                 })}

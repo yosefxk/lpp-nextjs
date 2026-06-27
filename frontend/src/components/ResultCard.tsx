@@ -11,6 +11,7 @@ interface ResultCardProps {
 }
 
 const TRANSLATE_KEYS_EN: Record<string, string> = {
+  // Common fields
   'שם דגם': 'Model Name',
   'כינוי מסחרי': 'Commercial Name',
   'רמת גימור': 'Trim Level',
@@ -49,7 +50,28 @@ const TRANSLATE_KEYS_EN: Record<string, string> = {
   'קוד סוג רכב': 'Vehicle Type Code',
   'סוג רכב': 'Vehicle Type',
   'סוג יבוא (חדש/משומש)': 'Import Type',
-  'היסטוריית העברת בעלויות': 'Ownership Transfer History'
+  'היסטוריית העברת בעלויות': 'Ownership Transfer History',
+
+  // Newly identified Gov DB fields
+  'מספר מנוע': 'Engine Number',
+  "קילומטראז' במבחן האחרון": 'Mileage at Last Test',
+  'אינדיקטור שינוי מבנה': 'Structure Alteration Indicator',
+  'מערכת גפ״מ': 'LPG System',
+  'שינוי צבע': 'Color Change Alteration',
+  'שינוי צמיג': 'Tire Alteration',
+  'תאריך רישום ראשון': 'First Registration Date',
+  'מקוריות הרכב': 'Vehicle Origin Type',
+  'תקלת ריקול': 'Recall Defect Reason',
+  'תיאור תקלה': 'Defect Detailed Description',
+  'תאריך פתיחת הריקול': 'Recall Release Date',
+  'סיבת הגבלת רישיון': 'License Restriction Reason',
+  'תאריך פתיחה': 'Incident Open Date',
+  'משקל מטען הרמה': 'Lifting Payload Capacity',
+  'תאריך התקנת מסנן': 'Filter Installation Date',
+  'תוקף רישיון (פג)': 'License Validity (Expired)',
+  'תאריך ביטול רכב': 'Cancellation Decommission Date',
+  'תוקף רישיון': 'License Expiry',
+  'תאריך שינוי בעלות': 'Ownership Date Modified'
 };
 
 const TRANSLATE_SOURCE_EN: Record<string, string> = {
@@ -57,7 +79,19 @@ const TRANSLATE_SOURCE_EN: Record<string, string> = {
   "אוטובוסים, מוניות ורכבים ציבוריים": "Buses, Taxis & Public Vehicles",
   "כלי רכב דו גלגליים": "Two-Wheeled Vehicles (Motorcycles)",
   "כלי רכב עם תג חניה לנכה": "Disabled Parking Tag Permit",
-  "כלי רכב ביבוא אישי": "Personal Import Vehicles"
+  "כלי רכב ביבוא אישי": "Personal Import Vehicles",
+  "מבחן רישוי שינוי מבנה וקילומטראז'": "Structure Alteration & Mileage History",
+  "הודעות יצרני הרכב לריקול": "Manufacturer Recall Bulletins",
+  "הגבלת רישוי בגין ריקול": "Recall Licensing Restrictions",
+  "כלי רכב כבדים (מעל 3.5 טון)": "Heavy Vehicles (Over 3.5 Tons)",
+  "התקנת מסנן למזהמים": "Emission Filter Installations",
+  "רכבים לא פעילים (עם דגם)": "Inactive Vehicles (With Model)",
+  "רכבים לא פעילים (ללא דגם)": "Inactive Vehicles (Without Model)",
+  "רכבים מבוטלים / הורדו מהכביש": "Cancelled / Decommissioned Vehicles",
+  "רכבים מבוטלים (ארכיון 2)": "Cancelled Vehicles (Archive 2)",
+  "רכבים מבוטלים (ארכיון 3)": "Cancelled Vehicles (Archive 3)",
+  "כלי רכב ציבוריים (פעילים)": "Active Public Transit Vehicles",
+  "היסטוריית העברת בעלות": "Ownership Transfer History"
 };
 
 const TRANSLATE_VALUES_EN: Record<string, string> = {
@@ -66,7 +100,9 @@ const TRANSLATE_VALUES_EN: Record<string, string> = {
   "פרטי": "Private",
   "מסחרי": "Commercial",
   "לא ידוע": "Unknown",
-  "אין נתונים": "No Data"
+  "אין נתונים": "No Data",
+  "קרייזלר ארה\"ב": "Chrysler USA",
+  "קרייזלר ארה״ב": "Chrysler USA"
 };
 
 function translate(text: string, lang: "he" | "en"): string {
@@ -79,12 +115,18 @@ export default function ResultCard({ sourceName, data, orderedKeys = [], delay =
   const importantKeys = orderedKeys.length > 0 ? orderedKeys.slice(0, 4) : allKeys.slice(0, 4);
   const remainingKeys = allKeys.filter((k) => !importantKeys.includes(k));
 
+  const isRtl = lang === "he";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: delay * 0.1 }}
       className="glass-panel rounded-2xl p-6 border-r-4 border-r-[#4ECDC4] hover:border-r-[#FF6B6B] transition-colors relative overflow-hidden group"
+      style={{
+        direction: isRtl ? "rtl" : "ltr",
+        textAlign: isRtl ? "right" : "left"
+      }}
     >
       <div className="absolute top-0 right-0 w-32 h-32 bg-[#4ECDC4]/5 rounded-full blur-3xl group-hover:bg-[#FF6B6B]/10 transition-colors" />
 
