@@ -9,9 +9,10 @@ interface SearchInputProps {
   onSearch: (plate: string) => void;
   isLoading: boolean;
   initialValue?: string;
+  lang: "he" | "en";
 }
 
-export default function SearchInput({ onSearch, isLoading, initialValue = "" }: SearchInputProps) {
+export default function SearchInput({ onSearch, isLoading, initialValue = "", lang }: SearchInputProps) {
   const [plate, setPlate] = useState(initialValue);
 
   // Sync state if url changes initially
@@ -25,13 +26,14 @@ export default function SearchInput({ onSearch, isLoading, initialValue = "" }: 
     e.preventDefault();
     if (plate.trim()) {
       onSearch(plate.trim());
-      // Minimize keyboard on mobile
       if (e.target instanceof HTMLFormElement) {
         const input = e.target.querySelector('input');
         if (input) input.blur();
       }
     }
   };
+
+  const isRtl = lang === "he";
 
   return (
     <form onSubmit={handleSubmit} className="relative w-full max-w-2xl mx-auto group">
@@ -48,18 +50,22 @@ export default function SearchInput({ onSearch, isLoading, initialValue = "" }: 
           autoFocus
           value={plate}
           onChange={(e) => setPlate(e.target.value)}
-          placeholder="הזן מספר רישוי"
+          placeholder={lang === "en" ? "Enter license plate number..." : "הזן מספר רישוי..."}
           className={cn(
-            "relative w-full glass-panel text-white rounded-2xl py-5 pl-14 pr-6",
+            "relative w-full glass-panel text-white rounded-2xl py-5",
+            isRtl ? "pl-14 pr-6 text-right" : "pr-14 pl-6 text-left",
             "text-xl font-medium focus:outline-none focus:border-[#4ECDC4]/50 transition-all",
             "placeholder:text-gray-500"
           )}
-          dir="rtl"
+          dir={isRtl ? "rtl" : "ltr"}
         />
         <button 
           type="submit" 
           disabled={isLoading || !plate} 
-          className="absolute left-4 text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors disabled:opacity-50"
+          className={cn(
+            "absolute text-gray-400 group-focus-within:text-[#4ECDC4] transition-colors disabled:opacity-50",
+            isRtl ? "left-4" : "right-4"
+          )}
         >
           {isLoading ? (
             <Loader2 className="w-7 h-7 animate-spin text-[#4ECDC4]" />
