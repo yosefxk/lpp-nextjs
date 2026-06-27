@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   backend:
-    build: ./backend
+    image: ghcr.io/yosefxk/lpp-nextjs-backend:latest
     container_name: israeli_license_plate_finder_backend
     ports:
       - "8081:8000"
@@ -11,11 +11,7 @@ services:
       - media_network
 
   frontend:
-    build: 
-      context: ./frontend
-      args:
-        - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL:-http://localhost:8000}
-        - NEXT_PUBLIC_APP_TITLE=${NEXT_PUBLIC_APP_TITLE:-Israeli License Plate Finder}
+    image: ghcr.io/yosefxk/lpp-nextjs-frontend:latest
     container_name: israeli_license_plate_finder_frontend
     ports:
       - "6942:3000"

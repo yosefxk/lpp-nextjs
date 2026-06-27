@@ -200,7 +200,19 @@ function SearchApp() {
     }
 
     try {
-      const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000').replace(/\/+$/, '');
+      let backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || '').replace(/\/+$/, '');
+      if (!backendUrl && typeof window !== 'undefined') {
+        const protocol = window.location.protocol;
+        const hostname = window.location.hostname;
+        if (hostname === 'localhost' || hostname.startsWith('192.168.') || hostname.startsWith('10.0.') || hostname.startsWith('100.')) {
+          backendUrl = `${protocol}//${hostname}:8081`;
+        } else {
+          backendUrl = `${protocol}//lpp-api.${hostname.replace(/^lpp\./, '')}`;
+        }
+      }
+      if (!backendUrl) {
+        backendUrl = 'http://localhost:8000';
+      }
       const res = await fetch(`${backendUrl}/api/search/${encodeURIComponent(plate)}`);
       
       if (!res.ok) {
