@@ -7,7 +7,7 @@ This project was successfully migrated from a legacy Python Streamlit applicatio
 ## 🏗️ Architecture Stack
 
 ### Frontend (`/frontend`)
-*   **Framework**: Next.js 14 (App Router)
+*   **Framework**: Next.js 16.2.1 (App Router)
 *   **Language**: TypeScript
 *   **Styling**: Tailwind CSS + CSS Modules
 *   **Animations**: Framer Motion
@@ -64,6 +64,8 @@ You can run both the frontend and backend simultaneously using Docker Compose. M
 docker-compose up --build -d
 ```
 The React UI will automatically be available at `http://localhost:3000`, and the backend at `http://localhost:8000`.
+
+For local frontend development, set `INTERNAL_BACKEND_URL=http://localhost:8000` so the Next.js proxy can reach the FastAPI server.
 
 To stop the containers:
 ```bash

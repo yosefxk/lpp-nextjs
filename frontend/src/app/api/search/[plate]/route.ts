@@ -5,11 +5,11 @@ import { NextRequest, NextResponse } from 'next/server';
  * This avoids cross-origin / SSL issues since the browser never leaves lp.baileytv.tech.
  *
  * In Docker the backend container is reachable at http://backend:8000 (service name).
- * For local development, fall back to http://localhost:8081.
+ * For local development, fall back to http://localhost:8000.
  */
 const BACKEND_BASE =
   process.env.INTERNAL_BACKEND_URL?.replace(/\/+$/, '') ||
-  (process.env.NODE_ENV === 'production' ? 'http://backend:8000' : 'http://localhost:8081');
+  (process.env.NODE_ENV === 'production' ? 'http://backend:8000' : 'http://localhost:8000');
 
 export async function GET(
   _request: NextRequest,
