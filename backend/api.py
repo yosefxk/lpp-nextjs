@@ -1,6 +1,8 @@
 import requests
 import concurrent.futures
 import logging
+import time
+from requests.adapters import HTTPAdapter
 from datetime import datetime
 from dictionaries import (
     resource_ids,
@@ -13,6 +15,16 @@ from dictionaries import (
 from utils import format_date
 
 logging.basicConfig(level=logging.INFO)
+
+# Use a session with connection pooling for faster repeated requests
+session = requests.Session()
+session.headers.update({'user-agent': 'datagov-external-client'})
+adapter = HTTPAdapter(pool_connections=50, pool_maxsize=50)
+session.mount('https://', adapter)
+
+# Simple in-memory TTL cache for recent license-plate searches
+_SEARCH_CACHE = {}
+_CACHE_TTL = 30  # seconds
 
 def parse_gov_date(ts):
     ts = str(ts).replace("-", "").replace(" ", "").replace("T", "").split(".")[0]
@@ -29,7 +41,7 @@ def fetch_data_for_resource(resource_key: str, lp_to_find: str):
     url = f"https://data.gov.il/api/action/datastore_search?resource_id={resource_id}&filters={{\"{field_name}\":\"{lp_to_find}\"}}"
     
     try:
-        response = requests.get(url, headers={'user-agent': 'datagov-external-client'}, timeout=10)
+        response = session.get(url, timeout=10)
         if response.status_code != 200: return None
         data = response.json()
         
@@ -103,6 +115,14 @@ def is_date_expired(date_str):
 def lp_search(lp_to_find: str):
     lp_to_find = str(lp_to_find).strip()
     if not lp_to_find: return None
+    # Check short-term cache first
+    cached = _SEARCH_CACHE.get(lp_to_find)
+    if cached:
+        ts, result = cached
+        if time.time() - ts < _CACHE_TTL:
+            return result.copy()
+        else:
+            del _SEARCH_CACHE[lp_to_find]
         
     unified_profile = {
         "license_plate": lp_to_find,
@@ -151,5 +171,10 @@ def lp_search(lp_to_find: str):
     # Only return if found in at least one dataset (even just a historic one)
     if not unified_profile["datasets"]:
          return None
-         
+    # Cache the unified profile briefly to speed repeat lookups
+    try:
+        _SEARCH_CACHE[lp_to_find] = (time.time(), unified_profile.copy())
+    except Exception:
+        pass
+
     return unified_profile
