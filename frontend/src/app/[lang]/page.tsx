@@ -193,7 +193,9 @@ function SearchApp() {
         if (hostname === 'localhost' || hostname.startsWith('192.168.') || hostname.startsWith('10.0.') || hostname.startsWith('100.')) {
           backendUrl = `${protocol}//${hostname}:8081`;
         } else {
-          backendUrl = `${protocol}//lpp-api.${hostname.replace(/^lpp\./, '')}`;
+          const cleanHost = hostname.replace(/^(lpp|lp)\./, '');
+          const prefix = hostname.startsWith('lpp.') ? 'lpp-api' : 'lp-api';
+          backendUrl = `${protocol}//${prefix}.${cleanHost}`;
         }
       }
       if (!backendUrl) {
