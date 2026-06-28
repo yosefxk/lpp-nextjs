@@ -35,11 +35,11 @@ const UI_TRANSLATIONS = {
 
 // Flag Translations (match raw backend flag text exactly to translate to clean text)
 const FLAG_TRANSLATIONS: Record<string, string> = {
-  "⚠️ קריאת שירות (ריקול) פתוחה רשומה על רכב זה": "Open Safety Recall registered for this vehicle",
-  "🚨 רישיון הרכב מוגבל עקב אי-ביצוע ריקול בזמן": "Vehicle license restricted due to outstanding safety recall",
-  "❌ רכב זה הורד מהכביש או בוטל סופית": "This vehicle has been permanently taken off the road or cancelled",
-  "❗ רכב זה רשום במשרד הרישוי כלא פעיל": "This vehicle is registered as inactive in the licensing registry",
-  "⚠️ תוקף רישיון הרכב (טסט) פג": "The M.O.T. test / vehicle license has expired"
+  "⚠️ קריאת שירות (ריקול) פתוחה רשומה על רכב זה": "⚠️ קריאת שירות (ריקול) פתוחה רשומה על רכב זה",
+  "🚨 רישיון הרכב מוגבל עקב אי-ביצוע ריקול בזמן": "🚨 רישיון הרכב מוגבל עקב אי-ביצוע ריקול בזמן",
+  "❌ רכב זה הורד מהכביש או בוטל סופית": "❌ רכב זה הורד מהכביש או בוטל סופית",
+  "❗ רכב זה רשום במשרד הרישוי כלא פעיל": "❗ רכב זה רשום במשרד הרישוי כלא פעיל",
+  "⚠️ תוקף רישיון הרכב (טסט) פג": "⚠️ תוקף רישיון הרכב (טסט) פג"
 };
 
 // Helper to strip leading emojis/icons from alert strings for clean text alignment
