@@ -121,41 +121,72 @@ interface OwnershipEntry {
 function parseAndFormatOwnershipHistory(historyString: string): OwnershipEntry[] {
   if (!historyString || !historyString.includes("⬅️")) return [];
 
-  // Split into chronological order (assume backend provides oldest -> newest)
-  const chrono = historyString.split(" ⬅️ ");
+  // Parse entries, extract a comparable numeric date value, then sort deterministically
+  const raw = historyString.split(" ⬅️ ").map((entry) => {
+    const [dateStrRaw, ownerRaw] = entry.split(":").map(s => s.trim());
+    return { raw: entry, dateStrRaw: dateStrRaw || "", ownerRaw: ownerRaw || "" };
+  }).filter(e => e.dateStrRaw && e.ownerRaw);
+
+  const parseDateValue = (dateStr: string) => {
+    // Prefer YYYYMM
+    if (/^\d{6}$/.test(dateStr)) {
+      const y = parseInt(dateStr.substring(0,4));
+      const m = parseInt(dateStr.substring(4,6));
+      return y * 100 + m;
+    }
+    // DD/MM/YYYY
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)) {
+      const parts = dateStr.split("/").map(p => p.padStart(2,'0'));
+      const y = parseInt(parts[2]);
+      const m = parseInt(parts[1]);
+      return y * 100 + m;
+    }
+    // fallback: extract digits
+    const nums = dateStr.replace(/[^0-9]/g, "");
+    if (nums.length >= 6) {
+      const y = parseInt(nums.substring(0,4));
+      const m = parseInt(nums.substring(4,6));
+      return y * 100 + m;
+    }
+    return 0;
+  };
+
+  // Build entries with dateValue, then sort ascending (oldest->newest)
+  const withValues = raw.map(r => ({
+    dateStr: r.dateStrRaw,
+    owner: r.ownerRaw,
+    dateValue: parseDateValue(r.dateStrRaw)
+  })).sort((a,b) => a.dateValue - b.dateValue);
+
+  // Assign ownership numbers in chronological order (oldest -> newest)
   const chronoFormatted: OwnershipEntry[] = [];
   let ownershipCount = 0;
-
-  // First pass: compute ownership numbers in chronological order (oldest -> newest)
-  chrono.forEach((entry) => {
-    const [dateStr, owner] = entry.split(":").map(s => s.trim());
-    if (!dateStr || !owner) return;
-
-    const isSocher = owner === "סוחר";
+  withValues.forEach(item => {
+    const isSocher = item.owner === "סוחר";
     if (!isSocher) ownershipCount++;
 
-    // Normalize common date formats -> MM/YYYY
+    // Format MM/YYYY for display
     let month = "00";
     let year = "0000";
-    if (/^\d{6}$/.test(dateStr)) {
-      month = dateStr.substring(4, 6);
-      year = dateStr.substring(0, 4);
-    } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-      const parts = dateStr.split("/");
-      month = parts[1];
+    if (/^\d{6}$/.test(item.dateStr)) {
+      month = item.dateStr.substring(4,6);
+      year = item.dateStr.substring(0,4);
+    } else if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(item.dateStr)) {
+      const parts = item.dateStr.split("/");
+      month = parts[1].padStart(2,'0');
       year = parts[2];
     } else {
-      const nums = dateStr.replace(/[^0-9]/g, "");
+      const nums = item.dateStr.replace(/[^0-9]/g, "");
       if (nums.length >= 6) {
-        month = nums.substring(4, 6);
-        year = nums.substring(0, 4);
+        month = nums.substring(4,6);
+        year = nums.substring(0,4);
       }
     }
     const formatted_date = `${month}/${year}`;
 
     chronoFormatted.push({
       date: formatted_date,
-      owner,
+      owner: item.owner,
       ownershipNum: isSocher ? null : ownershipCount,
       isSocher
     });
