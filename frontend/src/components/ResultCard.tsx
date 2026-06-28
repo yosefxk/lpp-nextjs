@@ -206,25 +206,28 @@ export default function ResultCard({ sourceName, data, orderedKeys = [], delay =
                   </span>
                   {/* Horizontal ownership flow */}
                   <div className="overflow-x-auto pb-2">
-                    <div className="flex gap-2 items-center justify-start min-w-fit flex-row-reverse" style={{direction: 'rtl'}}>
-                      {historyEntries.map((entry, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <div className={`flex flex-col items-center px-2 py-2 rounded-lg whitespace-nowrap ${
-                            entry.isSocher 
-                              ? "bg-gray-700/30 opacity-70" 
-                              : "bg-[#4ECDC4]/20"
-                          }`}>
-                            {entry.ownershipNum !== null && (
-                              <span className="text-[10px] text-gray-400 text-center">יד {entry.ownershipNum}</span>
+                    <div className="flex gap-2 items-center justify-center min-w-fit">
+                      {(() => {
+                        const display = historyEntries.slice().reverse(); // newest first => leftmost
+                        return display.map((entry, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <div className={`flex flex-col items-center justify-center px-3 py-2 rounded-lg whitespace-nowrap text-center ${
+                              entry.isSocher 
+                                ? "bg-gray-700/30 opacity-70" 
+                                : "bg-[#4ECDC4]/20"
+                            }`}>
+                              {entry.ownershipNum !== null && (
+                                <span className="text-[10px] text-gray-400">יד {entry.ownershipNum}</span>
+                              )}
+                              <span className="text-xs font-semibold text-white">{entry.owner}</span>
+                              <span className="text-[10px] text-gray-400">{entry.date}</span>
+                            </div>
+                            {idx < display.length - 1 && (
+                              <span className="text-[#4ECDC4] text-lg font-bold">←</span>
                             )}
-                            <span className="text-xs font-semibold text-white text-center">{entry.owner}</span>
-                            <span className="text-[10px] text-gray-400 text-center">{entry.date}</span>
                           </div>
-                          {idx < historyEntries.length - 1 && (
-                            <span className="text-[#4ECDC4] text-lg font-bold">←</span>
-                          )}
-                        </div>
-                      ))}
+                        ));
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -259,25 +262,28 @@ export default function ResultCard({ sourceName, data, orderedKeys = [], delay =
                     {translate(key, lang)}:
                   </span>
                   <div className="overflow-x-auto pb-1">
-                    <div className="flex gap-2 items-center justify-start min-w-fit flex-row-reverse" style={{direction: 'rtl'}}>
-                      {historyEntries.map((entry, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <div className={`flex flex-col items-center px-1.5 py-1.5 rounded text-center whitespace-nowrap text-[10px] ${
-                            entry.isSocher 
-                              ? "bg-gray-700/30 opacity-70" 
-                              : "bg-[#4ECDC4]/20"
-                          }`}>
-                            {entry.ownershipNum !== null && (
-                              <span className="text-[8px] text-gray-400">יד {entry.ownershipNum}</span>
+                    <div className="flex gap-2 items-center justify-center min-w-fit">
+                      {(() => {
+                        const display = historyEntries.slice().reverse();
+                        return display.map((entry, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <div className={`flex flex-col items-center justify-center px-2 py-1.5 rounded text-center whitespace-nowrap text-[10px] ${
+                              entry.isSocher 
+                                ? "bg-gray-700/30 opacity-70" 
+                                : "bg-[#4ECDC4]/20"
+                            }`}>
+                              {entry.ownershipNum !== null && (
+                                <span className="text-[8px] text-gray-400">יד {entry.ownershipNum}</span>
+                              )}
+                              <span className="font-semibold text-white">{entry.owner}</span>
+                              <span className="text-[8px] text-gray-400">{entry.date}</span>
+                            </div>
+                            {idx < display.length - 1 && (
+                              <span className="text-[#4ECDC4] text-sm font-bold">←</span>
                             )}
-                            <span className="font-semibold text-white text-center">{entry.owner}</span>
-                            <span className="text-[8px] text-gray-400 text-center">{entry.date}</span>
                           </div>
-                          {idx < historyEntries.length - 1 && (
-                            <span className="text-[#4ECDC4] text-sm font-bold">←</span>
-                          )}
-                        </div>
-                      ))}
+                        ));
+                      })()}
                     </div>
                   </div>
                 </div>
