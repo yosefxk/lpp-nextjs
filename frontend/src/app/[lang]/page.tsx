@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams, usePathname, useParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchInput from "@/components/SearchInput";
 import ResultCard from "@/components/ResultCard";
@@ -161,9 +161,8 @@ function SearchApp() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   
-  // Read dynamic route lang param
-  const params = useParams();
-  const lang = params.lang === "en" ? "en" : "he";
+  // Hebrew only
+  const lang = "he" as const;
 
   // Handle direct url load like ?lp=1234567
   useEffect(() => {
@@ -186,22 +185,7 @@ function SearchApp() {
     }
 
     try {
-      let backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || '').replace(/\/+$/, '');
-      if (!backendUrl && typeof window !== 'undefined') {
-        const protocol = window.location.protocol;
-        const hostname = window.location.hostname;
-        if (hostname === 'localhost' || hostname.startsWith('192.168.') || hostname.startsWith('10.0.') || hostname.startsWith('100.')) {
-          backendUrl = `${protocol}//${hostname}:8081`;
-        } else {
-          const cleanHost = hostname.replace(/^(lpp|lp)\./, '');
-          const prefix = hostname.startsWith('lpp.') ? 'lpp-api' : 'lp-api';
-          backendUrl = `${protocol}//${prefix}.${cleanHost}`;
-        }
-      }
-      if (!backendUrl) {
-        backendUrl = 'http://localhost:8000';
-      }
-      const res = await fetch(`${backendUrl}/api/search/${encodeURIComponent(plate)}`);
+      const res = await fetch(`/api/search/${encodeURIComponent(plate)}`);
       
       if (!res.ok) {
         if (res.status === 404) {

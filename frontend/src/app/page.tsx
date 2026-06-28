@@ -5,7 +5,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchInput from "@/components/SearchInput";
 import ResultCard from "@/components/ResultCard";
-import { AlertTriangle, Globe } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 type Dataset = {
   source_key: string;
@@ -157,27 +157,12 @@ function SearchApp() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Detect language state
-  const [lang, setLang] = useState<"he" | "en">("he");
+  // Fixed Hebrew language only
+  const [lang] = useState<"he">("he");
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-
-  // Load language from localStorage if available
-  useEffect(() => {
-    const saved = localStorage.getItem("lpp_lang");
-    if (saved === "he" || saved === "en") {
-      setLang(saved as "he" | "en");
-    }
-  }, []);
-
-  // Sync language selection to localStorage
-  const handleLangToggle = () => {
-    const newLang = lang === "he" ? "en" : "he";
-    setLang(newLang);
-    localStorage.setItem("lpp_lang", newLang);
-  };
 
   // Handle direct url load like ?lp=1234567
   useEffect(() => {
@@ -200,22 +185,7 @@ function SearchApp() {
     }
 
     try {
-      let backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || '').replace(/\/+$/, '');
-      if (!backendUrl && typeof window !== 'undefined') {
-        const protocol = window.location.protocol;
-        const hostname = window.location.hostname;
-        if (hostname === 'localhost' || hostname.startsWith('192.168.') || hostname.startsWith('10.0.') || hostname.startsWith('100.')) {
-          backendUrl = `${protocol}//${hostname}:8081`;
-        } else {
-          const cleanHost = hostname.replace(/^(lpp|lp)\./, '');
-          const prefix = hostname.startsWith('lpp.') ? 'lpp-api' : 'lp-api';
-          backendUrl = `${protocol}//${prefix}.${cleanHost}`;
-        }
-      }
-      if (!backendUrl) {
-        backendUrl = 'http://localhost:8000';
-      }
-      const res = await fetch(`${backendUrl}/api/search/${encodeURIComponent(plate)}`);
+      const res = await fetch(`/api/search/${encodeURIComponent(plate)}`);
       
       if (!res.ok) {
         if (res.status === 404) {
@@ -245,7 +215,7 @@ function SearchApp() {
   const isRtl = lang === "he";
 
   return (
-    <div className="w-full flex flex-col min-h-screen animate-fadeIn" style={{ direction: isRtl ? "rtl" : "ltr" }}>
+    <div className="w-full flex flex-col min-h-screen animate-fadeIn" style={{ direction: "rtl" }}>
       {/* Sticky Floating Navigation Header */}
       <header className="w-full max-w-7xl mx-auto px-4 py-4 flex justify-between items-center z-50">
         <div className="flex items-center gap-2">
@@ -253,13 +223,6 @@ function SearchApp() {
             🚗 IBLP Finder
           </span>
         </div>
-        <button 
-          onClick={handleLangToggle}
-          className="glass-panel text-white hover:text-[#4ECDC4] px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-white/5 transition-all cursor-pointer border border-white/10"
-        >
-          <Globe size={14} />
-          {lang === "he" ? "English" : "עברית"}
-        </button>
       </header>
 
       <main className="flex-1 py-8 px-4 md:px-8 max-w-7xl mx-auto flex flex-col w-full">
