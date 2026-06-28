@@ -119,50 +119,50 @@ interface OwnershipEntry {
 }
 
 function parseAndFormatOwnershipHistory(historyString: string): OwnershipEntry[] {
-  if (!historyString.includes("⬅️")) return [];
-  
-  const entries = historyString.split(" ⬅️ ").reverse();
-  const formatted: OwnershipEntry[] = [];
+  if (!historyString || !historyString.includes("⬅️")) return [];
+
+  // Split into chronological order (assume backend provides oldest -> newest)
+  const chrono = historyString.split(" ⬅️ ");
+  const chronoFormatted: OwnershipEntry[] = [];
   let ownershipCount = 0;
 
-    entries.forEach((entry) => {
-      const [dateStr, owner] = entry.split(":").map(s => s.trim());
-      if (!dateStr || !owner) return;
+  // First pass: compute ownership numbers in chronological order (oldest -> newest)
+  chrono.forEach((entry) => {
+    const [dateStr, owner] = entry.split(":").map(s => s.trim());
+    if (!dateStr || !owner) return;
 
-      const isSocher = owner === "סוחר";
-      if (!isSocher) ownershipCount++;
+    const isSocher = owner === "סוחר";
+    if (!isSocher) ownershipCount++;
 
-      // Normalize common date formats -> MM/YYYY
-      let month = "00";
-      let year = "0000";
-      // Case: YYYYMM (e.g., 202211)
-      if (/^\d{6}$/.test(dateStr)) {
-        month = dateStr.substring(4, 6);
-        year = dateStr.substring(0, 4);
-      } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-        // Case: DD/MM/YYYY
-        const parts = dateStr.split("/");
-        month = parts[1];
-        year = parts[2];
-      } else {
-        // Fallback: try to extract digits
-        const nums = dateStr.replace(/[^0-9]/g, "");
-        if (nums.length >= 6) {
-          month = nums.substring(4, 6);
-          year = nums.substring(0, 4);
-        }
+    // Normalize common date formats -> MM/YYYY
+    let month = "00";
+    let year = "0000";
+    if (/^\d{6}$/.test(dateStr)) {
+      month = dateStr.substring(4, 6);
+      year = dateStr.substring(0, 4);
+    } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      const parts = dateStr.split("/");
+      month = parts[1];
+      year = parts[2];
+    } else {
+      const nums = dateStr.replace(/[^0-9]/g, "");
+      if (nums.length >= 6) {
+        month = nums.substring(4, 6);
+        year = nums.substring(0, 4);
       }
-      const formatted_date = `${month}/${year}`;
+    }
+    const formatted_date = `${month}/${year}`;
 
-      formatted.push({
-        date: formatted_date,
-        owner,
-        ownershipNum: isSocher ? null : ownershipCount,
-        isSocher
-      });
+    chronoFormatted.push({
+      date: formatted_date,
+      owner,
+      ownershipNum: isSocher ? null : ownershipCount,
+      isSocher
     });
+  });
 
-  return formatted;
+  // Return newest -> oldest for display (leftmost newest)
+  return chronoFormatted.slice().reverse();
 }
 
 export default function ResultCard({ sourceName, data, orderedKeys = [], delay = 0, lang }: ResultCardProps) {
@@ -208,7 +208,7 @@ export default function ResultCard({ sourceName, data, orderedKeys = [], delay =
                   <div className="overflow-x-auto pb-2">
                     <div className="flex gap-2 items-center justify-center min-w-fit">
                       {(() => {
-                        const display = historyEntries.slice().reverse(); // newest first => leftmost
+                        const display = historyEntries; // already newest->oldest
                         return display.map((entry, idx) => (
                           <div key={idx} className="flex items-center gap-2">
                             <div className={`flex flex-col items-center justify-center px-3 py-2 rounded-lg whitespace-nowrap text-center ${
@@ -264,7 +264,7 @@ export default function ResultCard({ sourceName, data, orderedKeys = [], delay =
                   <div className="overflow-x-auto pb-1">
                     <div className="flex gap-2 items-center justify-center min-w-fit">
                       {(() => {
-                        const display = historyEntries.slice().reverse();
+                        const display = historyEntries; // already newest->oldest
                         return display.map((entry, idx) => (
                           <div key={idx} className="flex items-center gap-2">
                             <div className={`flex flex-col items-center justify-center px-2 py-1.5 rounded text-center whitespace-nowrap text-[10px] ${
