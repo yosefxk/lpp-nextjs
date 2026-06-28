@@ -23,14 +23,14 @@ type VehicleProfile = {
 
 // UI Translations
 const UI_TRANSLATIONS = {
-  title: { en: "Vehicle License Finder", he: "איתור רכב ולוחיות רישוי" },
-  subtitle: { en: "Hosted on BaileyTV", he: "באירוח BaileyTV" },
-  resultsTitle: { en: "Results for License Plate", he: "תוצאות עבור לוחית הרישוי" },
-  handicappedMsg: { en: "♿ This vehicle has an official disabled parking permit", he: "♿ לרכב זה קיים תג חניה לנכה רשמי" },
-  noDataError: { en: "No data found for the requested license plate number.", he: "לא נמצאו נתונים עבור לוחית הרישוי המבוקשת." },
-  connError: { en: "Failed to communicate with the server. Please try again.", he: "שגיאה בתקשורת מול השרת. אנא נסה שוב." },
-  unknownError: { en: "An unexpected error occurred.", he: "ארעה שגיאה בלתי צפויה." },
-  loadingText: { en: "Loading interface...", he: "טוען ממשק..." }
+  title: { he: "חיפוש כלי רכב" },
+  subtitle: { he: "בשיתוף BaileyTV" },
+  resultsTitle: { he: "" },
+  handicappedMsg: { he: "♿ לרכב זה קיים תג חניה לנכה רשמי" },
+  noDataError: { he: "לא נמצאו נתונים עבור לוחית הרישוי המבוקשת." },
+  connError: { he: "שגיאה בתקשורת מול השרת. אנא נסה שוב." },
+  unknownError: { he: "ארעה שגיאה בלתי צפויה." },
+  loadingText: { he: "טוען ממשק..." }
 };
 
 // Flag Translations (match raw backend flag text exactly to translate to clean text)
@@ -219,9 +219,6 @@ function SearchApp() {
       {/* Sticky Floating Navigation Header */}
       <header className="w-full max-w-7xl mx-auto px-4 py-4 flex justify-between items-center z-50">
         <div className="flex items-center gap-2">
-          <span className="text-xl font-bold tracking-wider bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent">
-            🚗 IBLP Finder
-          </span>
         </div>
       </header>
 
@@ -277,9 +274,7 @@ function SearchApp() {
             >
               {/* Graphic License Plate representation */}
               <div className="flex flex-col items-center justify-center gap-3 mb-8">
-                <span className="text-sm font-bold text-neutral-400 tracking-wide uppercase opacity-75">
-                  {UI_TRANSLATIONS.resultsTitle[lang]}
-                </span>
+
                 <LicensePlate number={profile.license_plate} />
               </div>
 

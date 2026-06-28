@@ -110,10 +110,17 @@ function translate(text: string, lang: "he" | "en"): string {
   return TRANSLATE_KEYS_EN[text] || TRANSLATE_SOURCE_EN[text] || TRANSLATE_VALUES_EN[text] || text;
 }
 
+// Special formatter for ownership history to make it readable on mobile and web
+function formatOwnershipHistory(historyString: string): string[] {
+  if (!historyString.includes("⬅️")) return [historyString];
+  return historyString.split(" ⬅️ ").reverse(); // Reverse to show newest first
+}
+
 export default function ResultCard({ sourceName, data, orderedKeys = [], delay = 0, lang }: ResultCardProps) {
   const allKeys = Object.keys(data);
   const importantKeys = orderedKeys.length > 0 ? orderedKeys.slice(0, 4) : allKeys.slice(0, 4);
-  const remainingKeys = allKeys.filter((k) => !importantKeys.includes(k));
+  const remainingKeys = allKeys.filter((k) => !importantKeys.includes(k) && k !== "היסטוריית העברת בעלויות");
+  const ownershipHistoryKey = allKeys.find(k => k === "היסטוריית העברת בעלויות");
 
   const isRtl = lang === "he";
 
