@@ -146,6 +146,24 @@ export default function ResultCard({ sourceName, data, orderedKeys = [], delay =
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 relative z-10">
           {importantKeys.map((key) => {
             if (!data[key]) return null;
+            if (key === "היסטוריית העברת בעלויות") {
+              const historyEntries = formatOwnershipHistory(data[key]);
+              return (
+                <div key={key} className="col-span-2 md:col-span-4 bg-white/5 border border-white/10 rounded-xl p-4">
+                  <span className="text-xs text-gray-400 font-medium block mb-2">
+                    {translate(key, lang)}
+                  </span>
+                  <div className="flex flex-col gap-2 max-h-24 overflow-y-auto">
+                    {historyEntries.map((entry, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-sm">
+                        <span className="text-[#4ECDC4] text-xs mt-0.5">•</span>
+                        <span className="text-white">{entry.trim()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
             return (
               <div key={key} className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col items-center justify-center text-center hover:bg-white/10 transition-colors">
                 <span className="text-xs text-gray-400 font-medium mb-1">
@@ -165,6 +183,24 @@ export default function ResultCard({ sourceName, data, orderedKeys = [], delay =
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10 border-t border-white/10 pt-4 mt-2">
           {remainingKeys.map((key) => {
             if (!data[key]) return null;
+            if (key === "היסטוריית העברת בעלויות") {
+              const historyEntries = formatOwnershipHistory(data[key]);
+              return (
+                <div key={key} className="col-span-1 md:col-span-2 bg-black/20 rounded-lg p-3">
+                  <span className="text-sm font-semibold text-gray-300 block mb-2">
+                    {translate(key, lang)}:
+                  </span>
+                  <div className="flex flex-col gap-1 max-h-24 overflow-y-auto">
+                    {historyEntries.map((entry, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-xs">
+                        <span className="text-[#4ECDC4] mt-0.5">•</span>
+                        <span className="text-gray-100">{entry.trim()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
             return (
               <div key={key} className="flex justify-between items-center bg-black/20 rounded-lg p-3">
                 <span className="text-sm font-semibold text-gray-300">
