@@ -291,27 +291,31 @@ function SearchApp() {
                   </motion.div>
                 )}
 
-                {profile.red_flags.map((flag, idx) => {
-                  const rawTranslated = FLAG_TRANSLATIONS[flag] || flag;
-                  const finalMessageText = cleanFlagText(rawTranslated);
-                  
-                  return (
-                    <motion.div 
-                      key={idx}
-                      initial={{ scale: 0.95, opacity: 0 }} 
-                      animate={{ scale: 1, opacity: 1 }} 
-                      transition={{ delay: 0.2 + (idx * 0.1) }}
-                      className="bg-[#ef4444]/15 border border-[#ef4444]/30 text-[#ef4444] px-6 py-4 rounded-xl flex items-center gap-3 font-bold shadow-lg shadow-[#ef4444]/10"
-                      style={{ 
-                        direction: isRtl ? "rtl" : "ltr",
-                        textAlign: isRtl ? "right" : "left"
-                      }}
-                    >
-                      <AlertTriangle className="w-6 h-6 shrink-0 text-[#ef4444]" />
-                      <span className="flex-1">{finalMessageText}</span>
-                    </motion.div>
-                  );
-                })}
+{profile.red_flags.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {profile.red_flags.map((flag, idx) => {
+                      const rawTranslated = FLAG_TRANSLATIONS[flag] || flag;
+                      const finalMessageText = cleanFlagText(rawTranslated);
+                      
+                      return (
+                        <motion.div 
+                          key={idx}
+                          initial={{ scale: 0.95, opacity: 0 }} 
+                          animate={{ scale: 1, opacity: 1 }} 
+                          transition={{ delay: 0.2 + (idx * 0.1) }}
+                          className="bg-[#ef4444]/15 border border-[#ef4444]/30 text-[#ef4444] px-4 py-3 rounded-xl flex items-center gap-3 font-bold shadow-lg shadow-[#ef4444]/10"
+                          style={{ 
+                            direction: isRtl ? "rtl" : "ltr",
+                            textAlign: isRtl ? "right" : "left"
+                          }}
+                        >
+                          <AlertTriangle className="w-5 h-5 shrink-0 text-[#ef4444]" />
+                          <span className="flex-1 text-sm">{finalMessageText}</span>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Datasets Grid */}
