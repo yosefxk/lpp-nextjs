@@ -132,9 +132,26 @@ function parseAndFormatOwnershipHistory(historyString: string): OwnershipEntry[]
       const isSocher = owner === "סוחר";
       if (!isSocher) ownershipCount++;
 
-      // Format date YYYYMM -> MM/YYYY (e.g., 202211 -> 11/2022)
-      const month = dateStr.length >= 6 ? dateStr.substring(4, 6) : "00";
-      const year = dateStr.length >= 4 ? dateStr.substring(0, 4) : "0000";
+      // Normalize common date formats -> MM/YYYY
+      let month = "00";
+      let year = "0000";
+      // Case: YYYYMM (e.g., 202211)
+      if (/^\d{6}$/.test(dateStr)) {
+        month = dateStr.substring(4, 6);
+        year = dateStr.substring(0, 4);
+      } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+        // Case: DD/MM/YYYY
+        const parts = dateStr.split("/");
+        month = parts[1];
+        year = parts[2];
+      } else {
+        // Fallback: try to extract digits
+        const nums = dateStr.replace(/[^0-9]/g, "");
+        if (nums.length >= 6) {
+          month = nums.substring(4, 6);
+          year = nums.substring(0, 4);
+        }
+      }
       const formatted_date = `${month}/${year}`;
 
       formatted.push({
