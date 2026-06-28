@@ -298,7 +298,7 @@ function SearchApp() {
 
                 {profile.red_flags.map((flag, idx) => {
                   const rawTranslated = FLAG_TRANSLATIONS[flag] || flag;
-                  const finalMessageText = lang === "en" ? rawTranslated : cleanFlagText(flag);
+                  const finalMessageText = cleanFlagText(rawTranslated);
                   
                   return (
                     <motion.div 
