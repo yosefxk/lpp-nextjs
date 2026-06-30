@@ -192,8 +192,8 @@ function parseAndFormatOwnershipHistory(historyString: string): OwnershipEntry[]
     });
   });
 
-  // Return newest -> oldest for display (leftmost newest)
-  return chronoFormatted.slice().reverse();
+  // Return oldest -> newest for display (RTL will render oldest rightmost, newest leftmost)
+  return chronoFormatted;
 }
 
 export default function ResultCard({ sourceName, data, orderedKeys = [], delay = 0, lang }: ResultCardProps) {

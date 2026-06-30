@@ -24,7 +24,7 @@ type VehicleProfile = {
 // UI Translations
 const UI_TRANSLATIONS = {
   title: { he: "חיפוש כלי רכב" },
-  subtitle: { he: "בשיתוף BaileyTV" },
+  subtitle: { he: "בחסות BaileyTV" },
   resultsTitle: { he: "" },
   handicappedMsg: { he: "♿ לרכב זה קיים תג חניה לנכה רשמי" },
   noDataError: { he: "לא נמצאו נתונים עבור לוחית הרישוי המבוקשת." },
